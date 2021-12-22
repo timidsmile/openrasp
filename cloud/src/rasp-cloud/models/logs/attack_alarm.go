@@ -17,7 +17,7 @@ package logs
 import (
 	"net/url"
 	"rasp-cloud/es"
-	"github.com/olivere/elastic"
+	"github.com/olivere/elastic/v7"
 	"time"
 	"context"
 	"github.com/oschwald/geoip2-golang"

@@ -17,7 +17,7 @@ package models
 import (
 	"rasp-cloud/es"
 	"time"
-	"github.com/olivere/elastic"
+	"github.com/olivere/elastic/v7"
 	"context"
 )
 

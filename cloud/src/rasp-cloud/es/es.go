@@ -19,15 +19,16 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/astaxie/beego"
-	"github.com/astaxie/beego/logs"
-	"github.com/olivere/elastic"
+	"strconv"
+	"time"
+
 	"rasp-cloud/conf"
 	"rasp-cloud/environment"
 	"rasp-cloud/tools"
-	"strconv"
-	"strings"
-	"time"
+
+	"github.com/astaxie/beego"
+	"github.com/astaxie/beego/logs"
+	"github.com/olivere/elastic/v7"
 )
 
 var (
@@ -35,7 +36,7 @@ var (
 	Version       string
 	ttlIndexes    = make(chan map[string]time.Duration, 1)
 	minEsVersion  = "5.6.0"
-	maxEsVersion  = "7.0.0"
+	maxEsVersion  = "7.1.0"
 )
 
 func init() {
@@ -57,15 +58,15 @@ func init() {
 			tools.Panic(tools.ErrCodeESInitFailed, "failed to get es version", err)
 		}
 		beego.Info("ES version: " + Version)
-		if strings.Compare(Version, minEsVersion) < 0 {
-			tools.Panic(tools.ErrCodeESInitFailed, "unable to support the ElasticSearch with a version lower than "+
-				minEsVersion+","+" the current version is "+Version, nil)
-		}
-		if strings.Compare(Version, maxEsVersion) >= 0 {
-			tools.Panic(tools.ErrCodeESInitFailed,
-				"unable to support the ElasticSearch with a version greater than or equal to "+
-					maxEsVersion+","+" the current version is "+Version, nil)
-		}
+		// if strings.Compare(Version, minEsVersion) < 0 {
+		// 	tools.Panic(tools.ErrCodeESInitFailed, "unable to support the ElasticSearch with a version lower than "+
+		// 		minEsVersion+","+" the current version is "+Version, nil)
+		// }
+		// if strings.Compare(Version, maxEsVersion) >= 0 {
+		// 	tools.Panic(tools.ErrCodeESInitFailed,
+		// 		"unable to support the ElasticSearch with a version greater than or equal to "+
+		// 			maxEsVersion+","+" the current version is "+Version, nil)
+		// }
 		ElasticClient = client
 	}
 }

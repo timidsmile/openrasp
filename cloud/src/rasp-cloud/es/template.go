@@ -36,10 +36,6 @@ var attackAlarmTemplate = `
 				}
 			},
 			"mappings": {
-				"attack-alarm": {
-					"_all": {
-						"enabled": false
-					},
 					"properties": {
 						"@timestamp":{
 							"type":"date"
@@ -203,7 +199,6 @@ var attackAlarmTemplate = `
 					}
 				}
 			}
-		}
 	`
 var policyAlarmTemplate = `
 		{
@@ -222,10 +217,6 @@ var policyAlarmTemplate = `
 				}
 			},
 			"mappings": {
-				"policy-alarm": {
-					"_all": {
-						"enabled": false
-					},
 					"properties": {
 						"@timestamp":{
 							"type":"date"
@@ -288,7 +279,6 @@ var policyAlarmTemplate = `
 					}
 				}
 			}
-		}
 		`
 var errorAlarmTemplate = `{
 			"template":"openrasp-error-alarm-*",
@@ -306,11 +296,7 @@ var errorAlarmTemplate = `{
 				}
 			},
 			"mappings": {
-				"error-alarm": {
-					"_all": {
-						"enabled": false
-					},
-					"properties": {
+				"properties": {
 						"@timestamp":{
 							"type":"date"
 						},
@@ -363,37 +349,33 @@ var errorAlarmTemplate = `{
 					}
 				}
 			}
-		}
 	`
 var reportDataTemplate = `
 		{
-			"template":"openrasp-report-data-*",
-			"aliases" : {
-        		"real-{index}" : {} 
-    		},
-			"mappings": {
-				"report-data": {
-					"_all": {
-						"enabled": false
-					},
-					"properties": {
-						"@timestamp":{
-							"type":"date"
-         				},
-						"time": {
-							"type": "date"
-						},
-						"request_sum": {
-							"type": "long"
-						},
-						"rasp_id": {
-							"type": "keyword",
-							"ignore_above" : 256
-						}
-					}
-				}
-			}
-		}
+    "template":"openrasp-report-data-*",
+    "aliases":{
+        "real-{index}":{
+
+        }
+    },
+    "mappings":{
+        "properties":{
+            "@timestamp":{
+                "type":"date"
+            },
+            "time":{
+                "type":"date"
+            },
+            "request_sum":{
+                "type":"long"
+            },
+            "rasp_id":{
+                "type":"keyword",
+                "ignore_above":256
+            }
+        }
+    }
+}
 	`
 
 var dependencyDataTemplate = `
@@ -413,11 +395,7 @@ var dependencyDataTemplate = `
 				}
 			},
 			"mappings": {
-				"dependency": {
-					"_all": {
-						"enabled": false
-					},
-					"properties": {
+				"properties": {
 						"@timestamp":{
 							"type":"date"
          				},
@@ -474,7 +452,6 @@ var dependencyDataTemplate = `
 					}
 				}
 			}
-		}
 	`
 
 var crashDataTemplate = `
@@ -494,10 +471,6 @@ var crashDataTemplate = `
 				}
 			},
 			"mappings": {
-				"crash-alarm": {
-					"_all": {
-						"enabled": false
-					},
 					"properties": {
 						"@timestamp":{
 							"type":"date"
@@ -542,7 +515,6 @@ var crashDataTemplate = `
 					}
 				}
 			}
-		}
 	`
 
 func init() {

@@ -6,7 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/astaxie/beego"
-	"github.com/olivere/elastic"
+	"github.com/olivere/elastic/v7"
 	"rasp-cloud/es"
 	"rasp-cloud/models/logs"
 	"sort"
@@ -103,11 +103,11 @@ func SearchDependency(appId string, param *SearchDependencyParam) (int64, []map[
 	result := make([]map[string]interface{}, 0, param.Perpage)
 	if queryResult != nil && queryResult.Hits != nil && queryResult.Hits.Hits != nil {
 		hits := queryResult.Hits.Hits
-		total = queryResult.Hits.TotalHits
+		total = queryResult.Hits.TotalHits.Value
 		result = make([]map[string]interface{}, len(hits))
 		for index, item := range hits {
 			result[index] = make(map[string]interface{})
-			err := json.Unmarshal(*item.Source, &result[index])
+			err := json.Unmarshal(item.Source, &result[index])
 			if err != nil {
 				return 0, nil, err
 			}
@@ -176,7 +176,7 @@ func AggrDependencyByQuery(appId string, param *SearchDependencyParam) (int64, [
 				if topHit, ok := item.TopHits(dependencyTopHitName); ok && topHit.Hits != nil && topHit.Hits.Hits != nil {
 					hits := topHit.Hits.Hits
 					if len(hits) > 0 {
-						err := json.Unmarshal(*hits[0].Source, &value)
+						err := json.Unmarshal(hits[0].Source, &value)
 						if err != nil {
 							return 0, nil, err
 						}

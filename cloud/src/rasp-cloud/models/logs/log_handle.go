@@ -1,16 +1,16 @@
-//Copyright 2017-2020 Baidu Inc.
+// Copyright 2017-2020 Baidu Inc.
 //
-//Licensed under the Apache License, Version 2.0 (the "License");
-//you may not use this file except in compliance with the License.
-//You may obtain a copy of the License at
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
 //
-//http: //www.apache.org/licenses/LICENSE-2.0
+// http: //www.apache.org/licenses/LICENSE-2.0
 //
-//Unless required by applicable law or agreed to in writing, software
-//distributed under the License is distributed on an "AS IS" BASIS,
-//WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-//See the License for the specific language governing permissions and
-//limitations under the License.
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
 package logs
 
@@ -19,19 +19,21 @@ import (
 	"crypto/md5"
 	"encoding/json"
 	"fmt"
-	"github.com/astaxie/beego"
-	"github.com/astaxie/beego/logs"
-	"github.com/olivere/elastic"
 	"net/url"
 	"os"
 	"path"
+	"strconv"
+	"strings"
+	"time"
+
 	"rasp-cloud/conf"
 	"rasp-cloud/es"
 	"rasp-cloud/kafka"
 	"rasp-cloud/tools"
-	"strconv"
-	"strings"
-	"time"
+
+	"github.com/astaxie/beego"
+	"github.com/astaxie/beego/logs"
+	"github.com/olivere/elastic/v7"
 )
 
 type AggrTimeParam struct {
@@ -361,12 +363,14 @@ func SearchLogs(startTime int64, endTime int64, isAttachAggr bool, query map[str
 	if !isAttachAggr {
 		if queryResult != nil && queryResult.Hits != nil && queryResult.Hits.Hits != nil {
 			hits := queryResult.Hits.Hits
-			total = queryResult.Hits.TotalHits
+			total = queryResult.Hits.TotalHits.Value
 			result = make([]map[string]interface{}, len(hits))
 			for index, item := range hits {
 				result[index] = make(map[string]interface{})
 				var filterId string
-				err := json.Unmarshal(*item.Source, &result[index])
+
+				err := json.Unmarshal(item.Source, &result[index])
+				// err := json.Unmarshal(*item.Source, &result[index])
 				if err != nil {
 					return 0, nil, err
 				}
@@ -406,7 +410,7 @@ func SearchLogs(startTime int64, endTime int64, isAttachAggr bool, query map[str
 						topHit.Hits != nil && topHit.Hits.Hits != nil {
 						hits := topHit.Hits.Hits
 						if len(hits) > 0 {
-							err := json.Unmarshal(*hits[0].Source, &value)
+							err := json.Unmarshal(hits[0].Source, &value)
 							if err != nil {
 								return 0, nil, err
 							}
